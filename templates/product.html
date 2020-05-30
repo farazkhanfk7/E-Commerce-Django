@@ -3,13 +3,6 @@
 <!--Main layout-->
 <main class="mt-5 pt-4">
   <div class="container dark-grey-text mt-5">
-    {% if messages %}
-    <div class="container">
-      {% for message in messages %}
-      <p {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %}>{{message | escape }}</p>
-      {% endfor %}
-    </div>
-    {% endif %}
 
     <!--Grid row-->
     <div class="row wow fadeIn">
@@ -33,7 +26,6 @@
               <span class="badge purple mr-1">{{object.get_category_display}}</span>
             </a>
           </div>
-          <p class="lead font-weight-bold">{{object.title}}</p>
 
           <p class="lead">
             {% if object.discount_price %}
