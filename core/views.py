@@ -19,6 +19,7 @@ class HomeView(ListView):
 
 class ItemDetailView(DetailView):
     model = Item
+    paginate_by = 1
     template_name = "product.html"
 
 
