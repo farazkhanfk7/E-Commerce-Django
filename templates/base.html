@@ -15,6 +15,8 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Material Design Bootstrap -->
     <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+    {% block extra_head %}
+    {% endblock extra_head %}
     <!-- Your custom styles (optional) -->
     <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
     <style type="text/css">
@@ -49,18 +51,19 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light mdb-color darken-2 scrolling-navbar">
         <div class="container">
 
             <!-- Brand -->
-            <a class="navbar-brand waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">
-                <strong class="blue-text">ECOM</strong>
+            <a class="navbar-brand waves-effect" href="#" target="_blank">
+                <strong class="blue-text" style="font-family: sans-serif;"> SHOPPER</strong>
             </a>
 
             <!-- Collapse -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" style="color:white;" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" style="color:white;"></span>
             </button>
 
             <!-- Links -->
@@ -68,16 +71,17 @@
 
                 <!-- Left -->
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link waves-effect" href="/">Home
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" style="color:white;" href="/">Home
                             <span class="sr-only">(current)</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="/checkout" target="_blank">Checkout</a>
+                        <a class="nav-link waves-effect" style="color:white;" href="/checkout"
+                            target="_blank">Checkout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="/product" target="_blank">Products</a>
+                        <a class="nav-link waves-effect" style="color:white;" href="#" target="_blank">Products</a>
                     </li>
                 </ul>
 
@@ -85,33 +89,37 @@
                 <ul class="navbar-nav nav-flex-icons">
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#">Hey !{{user}}</a>
+                        <a class="nav-link waves-effect" style="color:white;" href="#">Hey ! {{user}}</a>
                     </li>
                     <li class="nav-item">
                         <a href="/order-summary" class="nav-link waves-effect">
-                            <span class="badge red z-depth-1 mr-1"> {{request.user | cart_item_count}} </span>
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                            <span class="badge red z-depth-1 mr-1" style="color:white;">
+                                {{request.user | cart_item_count}} </span>
+                            <i class="fas fa-shopping-cart" style="color:white;"></i>
+                            <span class="clearfix d-none d-sm-inline-block" style="color:white;"> Cart </span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="{% url 'account_logout' %}">Logout</a>
+                        <a class="nav-link waves-effect" style="color:white;"
+                            href="{% url 'account_logout' %}">Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="{% url 'account_login' %}">Login</a>
+                        <a class="nav-link waves-effect" style="color:white;" href="{% url 'account_login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="{% url 'account_signup' %}">Register</a>
+                        <a class="nav-link waves-effect" style="color:white;"
+                            href="{% url 'account_signup' %}">Register</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a href="https://www.facebook.com/mdbootstrap" class="nav-link waves-effect" target="_blank">
+                        <a href="#" class="nav-link waves-effect" style="color:white;" target="_blank">
                             <i class="fab fa-facebook-f"></i>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="https://twitter.com/MDBootstrap" class="nav-link waves-effect" target="_blank">
+                        <a href="https://twitter.com/batcypher" style="color:white;" class="nav-link waves-effect"
+                            target="_blank">
                             <i class="fab fa-twitter"></i>
                         </a>
                     </li>
@@ -126,56 +134,24 @@
     {% endblock content %}
     <!--/.Footer-->
     <!--Footer-->
-    <footer class="page-footer text-center font-small mt-4 wow fadeIn pt-5 pt-5">
-
-        <!--Call to action-->
-        <div class="pt-4">
-            <a class="btn btn-outline-white" href="https://mdbootstrap.com/docs/jquery/getting-started/download/"
-                target="_blank" role="button">Download MDB
-                <i class="fas fa-download ml-2"></i>
-            </a>
-            <a class="btn btn-outline-white" href="https://mdbootstrap.com/education/bootstrap/" target="_blank"
-                role="button">Start
-                free tutorial
-                <i class="fas fa-graduation-cap ml-2"></i>
-            </a>
-        </div>
-        <!--/.Call to action-->
-
-        <hr class="my-4">
+    <footer class="page-footer text-center font-small mt-4 mdb-color darken-2 fadeIn pt-5 pt-5">
 
         <!-- Social icons -->
         <div class="pb-4">
-            <a href="https://www.facebook.com/mdbootstrap" target="_blank">
+            <a href="#" target="_blank">
                 <i class="fab fa-facebook-f mr-3"></i>
             </a>
 
-            <a href="https://twitter.com/MDBootstrap" target="_blank">
+            <a href="https://twitter.com/batcypher" target="_blank">
                 <i class="fab fa-twitter mr-3"></i>
             </a>
 
-            <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
-                <i class="fab fa-youtube mr-3"></i>
+            <a href="https://instagram.com/batcypher" target="_blank">
+                <i class="fab fa-instagram mr-3"></i>
             </a>
 
-            <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
-                <i class="fab fa-google-plus-g mr-3"></i>
-            </a>
-
-            <a href="https://dribbble.com/mdbootstrap" target="_blank">
-                <i class="fab fa-dribbble mr-3"></i>
-            </a>
-
-            <a href="https://pinterest.com/mdbootstrap" target="_blank">
-                <i class="fab fa-pinterest mr-3"></i>
-            </a>
-
-            <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
+            <a href="https://github.com/farazkhanfk7" target="_blank">
                 <i class="fab fa-github mr-3"></i>
-            </a>
-
-            <a href="http://codepen.io/mdbootstrap/" target="_blank">
-                <i class="fab fa-codepen mr-3"></i>
             </a>
         </div>
         <!-- Social icons -->
@@ -183,7 +159,7 @@
         <!--Copyright-->
         <div class="footer-copyright py-3">
             © 2019 Copyright:
-            <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> MDBootstrap.com </a>
+            <a href="https://github.com/farazkhanfk7" target="_blank"> Faraz Khan @batcypher </a>
         </div>
         <!--/.Copyright-->
 
@@ -212,6 +188,8 @@
         new WOW().init();
 
     </script>
+    {% block extra_script %}
+    {% endblock extra_script %}
 </body>
 
 </html>

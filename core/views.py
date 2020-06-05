@@ -1,23 +1,36 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from .models import Item, Orderitem, Order, Address
+from .models import Item, Orderitem, Order, Address, Payment
 from django.views.generic import ListView, DetailView, View
 from django.utils import timezone
 from django.contrib import messages
 from .forms import CheckoutForm
+from django.conf import settings
+
+import stripe
+stripe.api_key = 'sk_test_51GqdShDXThita7nzArJ3jK8wDJFz2gXTMcYkXne6mpmwt17ufDJwST8g2iPCilMIvvkN3EslL8Iri5ii5t5lgSgw00LIT6EFxu'
+
 
 # Create your views here.
-
-
 class CheckoutView(View):
+    @method_decorator(login_required)
     def get(self, *args, **kwargs):
-        form = CheckoutForm()
-        context = {
-            'form': form
-        }
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            form = CheckoutForm()
+            context = {
+                'form': form,
+                'object': order
+            }
+        except Exception:
+            form = CheckoutForm()
+            context = {
+                'form': form
+            }
         return render(self.request, "checkout.html", context)
 
     def post(self, *args, **kwargs):
@@ -40,12 +53,65 @@ class CheckoutView(View):
                 address.save()
                 order.address = address
                 order.save()
-                return redirect('core:checkout')
+                return redirect('core:payment')
             messages.warning(self.request, "Failed Checkout")
-            return redirect('core:checkout')
+            return redirect('core:payment')
         except ObjectDoesNotExist:
             messages.error(request, "You don't have an active order")
             return redirect('core:order-summary')
+
+
+class PaymentView(View):
+    @method_decorator(login_required)
+    def get(self, *args, **kwargs):
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        context = {
+            'object': order
+        }
+        return render(self.request, "payment.html", context)
+
+    def post(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            token = self.request.POST.get('stripeToken')
+            amount = int(order.get_total() * 100)
+            charge = stripe.Charge.create(
+                amount=amount,
+                currency="usd",
+                source="token"
+            )
+
+            # payment
+            payment = Payment()
+            payment.stripe_charge_id = charge['id']
+            payment.user = self.request.user
+            payment.amount = order.get_total()
+            payment.save()
+
+            # link payment to order
+            order.ordered = True
+            order.payment = payment
+            order.save()
+
+            messages.success(self.request, "Your order was successful")
+            return redirect("/")
+        except Exception:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            amount = int(order.get_total() * 100)
+            # payment
+            payment = Payment()
+            payment.stripe_charge_id = 'dghd45454hjgfdhgf'
+            payment.user = self.request.user
+            payment.amount = order.get_total()
+            payment.save()
+
+            # link payment to order
+            order.ordered = True
+            order.payment = payment
+            order.save()
+
+            messages.success(self.request, "Your order was successful")
+            return redirect("/")
 
 
 class HomeView(ListView):
@@ -54,6 +120,7 @@ class HomeView(ListView):
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
+    @method_decorator(login_required)
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
@@ -61,9 +128,8 @@ class OrderSummaryView(LoginRequiredMixin, View):
                 'object': order
             }
             return render(self.request, 'ordersummary.html', context)
-        except ObjectDoesNotExist:
-            messages.error(request, "You don't have an active order")
-            return redirect('/')
+        except Exception:
+            return render(self.request, 'ordersummary.html')
 
 
 class ItemDetailView(DetailView):
