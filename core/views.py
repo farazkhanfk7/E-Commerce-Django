@@ -3,16 +3,49 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from .models import Item, Orderitem, Order
+from .models import Item, Orderitem, Order, Address
 from django.views.generic import ListView, DetailView, View
 from django.utils import timezone
 from django.contrib import messages
+from .forms import CheckoutForm
 
 # Create your views here.
 
 
-def checkout(request):
-    return render(request, "checkout.html")
+class CheckoutView(View):
+    def get(self, *args, **kwargs):
+        form = CheckoutForm()
+        context = {
+            'form': form
+        }
+        return render(self.request, "checkout.html", context)
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            if form.is_valid():
+                street_address = form.cleaned_data.get('street_address')
+                apartment_address = form.cleaned_data.get('street_address')
+                country = form.cleaned_data.get('country')
+                zipc = form.cleaned_data.get('zipc')
+                payment_option = form.cleaned_data.get('payment_option')
+                address = Address(
+                    user=self.request.user,
+                    street_address=street_address,
+                    apartment_address=apartment_address,
+                    country=country,
+                    zipc=zipc
+                )
+                address.save()
+                order.address = address
+                order.save()
+                return redirect('core:checkout')
+            messages.warning(self.request, "Failed Checkout")
+            return redirect('core:checkout')
+        except ObjectDoesNotExist:
+            messages.error(request, "You don't have an active order")
+            return redirect('core:order-summary')
 
 
 class HomeView(ListView):
